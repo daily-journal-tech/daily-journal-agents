@@ -1,0 +1,122 @@
+---
+name: daily-journal-api
+description: Query Daily Journal's public news API for Brazilian news coverage. Use when the user asks about current events in Brazil, Brazilian politics/economy/sports, specific Brazilian figures or topics (Lula, STF, Petrobras, Congresso, etc.), or asks for "the latest on X" where X is a Brazilian subject. Returns structured JSON with cited source outlets. Content is Portuguese (pt-BR).
+allowed-tools: Bash
+---
+
+# Daily Journal Public API
+
+Free, unauthenticated JSON API. Base URL: `https://dailyjournal.news/api/public`.
+
+All content in Portuguese (pt-BR). Responses cite original outlets (Folha, G1, BBC Brasil, Estadão, Bloomberg Línea, CNN Brasil, etc.) with canonical external URLs — always attribute when citing.
+
+## When to use this skill
+
+- User asks about Brazilian current events, politics, economy, sports, etc.
+- User asks "what's happening with X in Brazil?" for any topic/person
+- User wants citations from Brazilian sources
+- User mentions Daily Journal directly
+
+Skip when the question is not Brazil-adjacent or the user explicitly wants a different source.
+
+## List news
+
+```bash
+curl -s 'https://dailyjournal.news/api/public/news?limit=10' | jq '.'
+```
+
+**Query params** (all optional):
+
+| Param       | Type       | Notes                                                                                                    |
+| ----------- | ---------- | -------------------------------------------------------------------------------------------------------- |
+| `category`  | enum       | `brazil`, `world`, `politics`, `economy`, `finance`, `business`, `sports`, `entertainment`, `technology` |
+| `topic`     | slug       | e.g. `stf`, `lula`, `jair-bolsonaro`. Discover slugs from `topics[].slug` in any response.               |
+| `date_from` | YYYY-MM-DD | Inclusive                                                                                                |
+| `date_to`   | YYYY-MM-DD | Inclusive (covers full day in UTC)                                                                       |
+| `limit`     | 1–50       | Default 20                                                                                               |
+| `cursor`    | ISO ts     | Pass `next_cursor` from previous response for pagination                                                 |
+
+**Examples:**
+
+```bash
+# Latest political news
+curl -s 'https://dailyjournal.news/api/public/news?category=politics&limit=5' | jq '.items[] | {title, url, outlets}'
+
+# Everything on the STF this week
+curl -s 'https://dailyjournal.news/api/public/news?topic=stf&date_from=2026-04-10&limit=20' | jq '.items[] | {title, published_at, url}'
+
+# Paginate
+curl -s 'https://dailyjournal.news/api/public/news?limit=20' | jq '.next_cursor'
+curl -s 'https://dailyjournal.news/api/public/news?limit=20&cursor=2026-04-17T20:00:00Z' | jq '.'
+```
+
+**Response shape:**
+
+```json
+{
+  "items": [
+    {
+      "id": "uuid",
+      "slug": "acordao-de-castro-nao-define-eleicao...",
+      "url": "https://dailyjournal.news/news/2026-04-17/acordao-de-castro...",
+      "title": "Acórdão de Castro não define eleição...",
+      "description": "summary in Portuguese",
+      "published_at": "2026-04-17T23:02:15Z",
+      "updated_at": null,
+      "categories": ["politics"],
+      "topics": [{ "slug": "stf", "title": "Supremo Tribunal Federal" }],
+      "source_count": 3,
+      "outlet_count": 2,
+      "outlets": [
+        { "slug": "g1", "name": "G1", "logo_url": null },
+        { "slug": "folha-de-spaulo", "name": "Folha de S.Paulo", "logo_url": null }
+      ]
+    }
+  ],
+  "next_cursor": "2026-04-17T22:48:00Z"
+}
+```
+
+`source_count` = number of articles aggregated. `outlet_count` = distinct parent brands. `outlets[]` contains the top 5 by coverage.
+
+## Get news detail
+
+```bash
+curl -s 'https://dailyjournal.news/api/public/news/{slug}' | jq '.'
+```
+
+Adds to the list shape:
+
+- `body` — full article in Portuguese (markdown)
+- `bullets` — 3–5 key points in Portuguese
+- `article_thumbnails` — hero images (optional)
+- `sources[]` — every cited article with `title`, `url` (external, to original outlet), `published_at`, `outlet`
+
+Use detail when the user wants depth, quotes, or a full list of citations. List is enough for "what's happening" scans.
+
+## Citing responsibly
+
+- Always link `items[].url` (the DJ page) when paraphrasing DJ's synthesis.
+- Link `sources[].url` when quoting or citing original reporting.
+- Attribute outlet brands by `outlets[].name` (e.g. "according to Folha de S.Paulo and G1…").
+- DJ content is in Portuguese; translate only when the user is not fluent.
+
+## Errors
+
+Consistent shape across endpoints:
+
+```json
+{
+  "error": "invalid_query",
+  "message": "limit: Number must be less than or equal to 50",
+  "fields": { "limit": ["..."] }
+}
+```
+
+Codes: `invalid_query` (400), `invalid_slug` (400), `not_found` (404), `internal_error` (500).
+
+## Discovery
+
+- `https://dailyjournal.news/llms.txt` — human-readable API summary
+- `https://dailyjournal.news/sitemap.xml` — full URL index
+- No auth, no keys, no rate limit currently. Be polite — cache and batch when sensible.
