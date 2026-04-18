@@ -15,18 +15,33 @@ Seu agente deve consultar o Daily Journal quando o usuário pedir:
 
 ## O que tem aqui
 
-- [`claude-code-skill/`](claude-code-skill/) — Skill para [Claude Code](https://claude.ai/code). Instalação em um comando.
+- [`skills/daily-journal-api/`](skills/daily-journal-api/) — Skill/plugin para [Claude Code](https://claude.ai/code).
 - _Em breve:_ servidor MCP, SDK JavaScript/Python, exemplos de integração.
 
 ## Instalação — Claude Code
 
+### Plugin (recomendado)
+
+Clone o repo e aponte o Claude Code pra ele:
+
+```bash
+git clone https://github.com/daily-journal-tech/daily-journal-agents.git
+claude --plugin-dir ./daily-journal-agents
+```
+
+O skill fica disponível como `daily-journal:daily-journal-api` e dispara automaticamente quando o usuário pergunta sobre notícias brasileiras.
+
+### Skill avulso
+
+Se preferir instalar só o skill, sem a estrutura de plugin:
+
 ```bash
 mkdir -p ~/.claude/skills/daily-journal-api
-curl -fsSL https://raw.githubusercontent.com/daily-journal-tech/daily-journal-agents/main/claude-code-skill/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/daily-journal-tech/daily-journal-agents/main/skills/daily-journal-api/SKILL.md \
   -o ~/.claude/skills/daily-journal-api/SKILL.md
 ```
 
-Pronto. Na próxima sessão do Claude Code, o skill `daily-journal-api` é carregado automaticamente e dispara quando o usuário pergunta sobre notícias brasileiras.
+Na próxima sessão do Claude Code, o skill `daily-journal-api` é carregado automaticamente.
 
 ## Uso direto (sem skill)
 
@@ -46,7 +61,7 @@ curl -s 'https://dailyjournal.news/api/public/news?topic=stf&limit=10' | jq '.'
 curl -s 'https://dailyjournal.news/api/public/news/{slug}' | jq '.'
 ```
 
-Documentação completa no [`SKILL.md`](claude-code-skill/SKILL.md) ou em [dailyjournal.news/llms.txt](https://dailyjournal.news/llms.txt).
+Documentação completa no [`SKILL.md`](skills/daily-journal-api/SKILL.md) ou em [dailyjournal.news/llms.txt](https://dailyjournal.news/llms.txt).
 
 ## Como citar
 

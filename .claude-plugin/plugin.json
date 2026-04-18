@@ -1,0 +1,11 @@
+{
+  "name": "daily-journal",
+  "description": "Brazilian news API — query Daily Journal's public API for current events, politics, economy, sports, and more. Content in Portuguese (pt-BR) with cited source outlets.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Daily Journal"
+  },
+  "homepage": "https://dailyjournal.news",
+  "repository": "https://github.com/daily-journal-tech/daily-journal-agents",
+  "license": "MIT"
+}
