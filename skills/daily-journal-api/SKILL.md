@@ -1,6 +1,6 @@
 ---
 name: daily-journal-api
-description: Query Daily Journal's public news API for Brazilian news coverage. Use when the user asks about current events in Brazil, Brazilian politics/economy/sports, specific Brazilian figures or topics (Lula, STF, Petrobras, Congresso, etc.), or asks for "the latest on X" where X is a Brazilian subject. Returns structured JSON with cited source outlets. Content is Portuguese (pt-BR).
+description: Query Daily Journal's public news API for world news coverage in Portuguese. Use when the user asks about current events globally — politics, economy, business, finance, technology, world affairs, sports — or asks for "the latest on X" for any topic, person, or event. Returns structured JSON with cited source outlets. Content is Portuguese (pt-BR).
 allowed-tools: Bash
 ---
 
@@ -8,16 +8,16 @@ allowed-tools: Bash
 
 Free, unauthenticated JSON API. Base URL: `https://dailyjournal.news/api/public`.
 
-All content in Portuguese (pt-BR). Responses cite original outlets (Folha, G1, BBC Brasil, Estadão, Bloomberg Línea, CNN Brasil, etc.) with canonical external URLs — always attribute when citing.
+Global news coverage in Portuguese (pt-BR). Responses cite original outlets (BBC, Financial Times, NYT, WSJ, Bloomberg, Al Jazeera, Folha, G1, UOL, CNN Brasil, etc.) with canonical external URLs — always attribute when citing.
 
 ## When to use this skill
 
-- User asks about Brazilian current events, politics, economy, sports, etc.
-- User asks "what's happening with X in Brazil?" for any topic/person
-- User wants citations from Brazilian sources
+- User asks about current events — politics, economy, business, finance, technology, world affairs, sports
+- User asks "what's happening with X?" for any topic, person, or event
+- User wants Portuguese-language coverage with cited sources
 - User mentions Daily Journal directly
 
-Skip when the question is not Brazil-adjacent or the user explicitly wants a different source.
+Skip when the user explicitly wants a different source or a non-news task.
 
 ## List news
 
@@ -29,8 +29,8 @@ curl -s 'https://dailyjournal.news/api/public/news?limit=10' | jq '.'
 
 | Param       | Type       | Notes                                                                                                    |
 | ----------- | ---------- | -------------------------------------------------------------------------------------------------------- |
-| `category`  | enum       | `brazil`, `world`, `politics`, `economy`, `finance`, `business`, `sports`, `entertainment`, `technology` |
-| `topic`     | slug       | e.g. `stf`, `lula`, `jair-bolsonaro`. Discover slugs from `topics[].slug` in any response.               |
+| `category`  | enum       | `world`, `politics`, `economy`, `finance`, `business`, `technology`, `sports`, `entertainment`, `brazil` |
+| `topic`     | slug       | e.g. `emmanuel-macron`, `relacoes-eua-canada`, `stf`. Discover slugs from `topics[].slug` in any response. |
 | `date_from` | YYYY-MM-DD | Inclusive                                                                                                |
 | `date_to`   | YYYY-MM-DD | Inclusive (covers full day in UTC)                                                                       |
 | `limit`     | 1–50       | Default 20                                                                                               |
@@ -39,11 +39,11 @@ curl -s 'https://dailyjournal.news/api/public/news?limit=10' | jq '.'
 **Examples:**
 
 ```bash
-# Latest political news
-curl -s 'https://dailyjournal.news/api/public/news?category=politics&limit=5' | jq '.items[] | {title, url, outlets}'
+# Latest world news
+curl -s 'https://dailyjournal.news/api/public/news?category=world&limit=5' | jq '.items[] | {title, url, outlets}'
 
-# Everything on the STF this week
-curl -s 'https://dailyjournal.news/api/public/news?topic=stf&date_from=2026-04-10&limit=20' | jq '.items[] | {title, published_at, url}'
+# Everything on a topic this week
+curl -s 'https://dailyjournal.news/api/public/news?topic=emmanuel-macron&date_from=2026-04-20&limit=20' | jq '.items[] | {title, published_at, url}'
 
 # Paginate
 curl -s 'https://dailyjournal.news/api/public/news?limit=20' | jq '.next_cursor'
@@ -98,7 +98,7 @@ Use detail when the user wants depth, quotes, or a full list of citations. List 
 
 - Always link `items[].url` (the DJ page) when paraphrasing DJ's synthesis.
 - Link `sources[].url` when quoting or citing original reporting.
-- Attribute outlet brands by `outlets[].name` (e.g. "according to Folha de S.Paulo and G1…").
+- Attribute outlet brands by `outlets[].name` (e.g. "according to BBC and Folha de S.Paulo…").
 - DJ content is in Portuguese; translate only when the user is not fluent.
 
 ## Errors
