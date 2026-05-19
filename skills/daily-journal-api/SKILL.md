@@ -90,7 +90,7 @@ Adds to the list shape:
 - `body` — full article in Portuguese (markdown)
 - `bullets` — 3–5 key points in Portuguese
 - `article_thumbnails` — hero images (optional)
-- `sources[]` — every cited article with `title`, `url` (external, to original outlet), `published_at`, `outlet`
+- `sources[]` — every cited article with `title`, `url` (external, to original outlet), `published_at`, `outlet` (object `{slug, name, logo_url}` or `null` when the source has no outlet mapping)
 
 Use detail when the user wants depth, quotes, or a full list of citations. List is enough for "what's happening" scans.
 
@@ -120,3 +120,4 @@ Codes: `invalid_query` (400), `invalid_slug` (400), `not_found` (404), `internal
 - `https://dailyjournal.news/llms.txt` — human-readable API summary
 - `https://dailyjournal.news/sitemap.xml` — full URL index
 - No auth, no keys, no rate limit currently. Be polite — cache and batch when sensible.
+- List responses are cached at the edge for 60s (`s-maxage=60, stale-while-revalidate=600`). Expect ~1 min lag on the very latest item; repeated identical queries are cheap.
