@@ -33,6 +33,7 @@ curl -s 'https://dailyjournal.news/api/public/news?limit=10' | jq '.'
 | `topic`     | slug       | e.g. `emmanuel-macron`, `relacoes-eua-canada`, `stf`. Discover slugs from `topics[].slug` in any response. |
 | `date_from` | YYYY-MM-DD | Inclusive                                                                                                |
 | `date_to`   | YYYY-MM-DD | Inclusive (covers full day in UTC)                                                                       |
+| `search`    | text       | Full-text over headline/summary/body (prefix match; multi-word ANDs terms)                               |
 | `limit`     | 1–50       | Default 20                                                                                               |
 | `cursor`    | ISO ts     | Pass `next_cursor` from previous response for pagination                                                 |
 
@@ -44,6 +45,9 @@ curl -s 'https://dailyjournal.news/api/public/news?category=world&limit=5' | jq 
 
 # Everything on a topic this week
 curl -s 'https://dailyjournal.news/api/public/news?topic=emmanuel-macron&date_from=2026-04-20&limit=20' | jq '.items[] | {title, published_at, url}'
+
+# Full-text search (combine with any filter)
+curl -s 'https://dailyjournal.news/api/public/news?search=trump%20tariffs&limit=10' | jq '.items[] | {title, url}'
 
 # Paginate
 curl -s 'https://dailyjournal.news/api/public/news?limit=20' | jq '.next_cursor'

@@ -57,6 +57,9 @@ curl -s 'https://dailyjournal.news/api/public/news?category=world&limit=5' | jq 
 # Por tópico (slugs descobertos em items[].topics[].slug)
 curl -s 'https://dailyjournal.news/api/public/news?topic=emmanuel-macron&limit=10' | jq '.'
 
+# Busca full-text (combina com qualquer filtro)
+curl -s 'https://dailyjournal.news/api/public/news?search=trump%20tariffs&limit=10' | jq '.'
+
 # Detalhe de uma matéria (com body, bullets, fontes citadas)
 curl -s 'https://dailyjournal.news/api/public/news/{slug}' | jq '.'
 ```
