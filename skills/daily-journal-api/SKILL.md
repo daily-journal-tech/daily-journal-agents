@@ -1,6 +1,6 @@
 ---
 name: daily-journal-api
-description: Query Daily Journal's public news API for world news coverage in Portuguese. Use when the user asks about current events globally — politics, economy, business, finance, technology, world affairs, sports — or asks for "the latest on X" for any topic, person, or event. Returns structured JSON with cited source outlets. Content is Portuguese (pt-BR).
+description: Query Daily Journal's public news API for world news coverage in Portuguese. Use when the user asks about current events globally — politics, economy, business, finance, technology, science, world affairs, sports — or asks for "the latest on X" for any topic, person, or event. Returns structured JSON with cited source outlets. Content is Portuguese (pt-BR).
 allowed-tools: Bash
 ---
 
@@ -12,7 +12,7 @@ Global news coverage in Portuguese (pt-BR). Responses cite original outlets (BBC
 
 ## When to use this skill
 
-- User asks about current events — politics, economy, business, finance, technology, world affairs, sports
+- User asks about current events — politics, economy, business, finance, technology, science, world affairs, sports
 - User asks "what's happening with X?" for any topic, person, or event
 - User wants Portuguese-language coverage with cited sources
 - User mentions Daily Journal directly
@@ -29,7 +29,7 @@ curl -s 'https://dailyjournal.news/api/public/news?limit=10' | jq '.'
 
 | Param       | Type       | Notes                                                                                                    |
 | ----------- | ---------- | -------------------------------------------------------------------------------------------------------- |
-| `category`  | enum       | `world`, `politics`, `economy`, `finance`, `business`, `technology`, `sports`, `entertainment`, `brazil` |
+| `category`  | enum       | `world`, `politics`, `economy`, `finance`, `business`, `technology`, `science`, `sports`, `entertainment`, `brazil` |
 | `topic`     | slug       | e.g. `emmanuel-macron`, `relacoes-eua-canada`, `stf`. Discover slugs from `topics[].slug` in any response. |
 | `date_from` | YYYY-MM-DD | Inclusive                                                                                                |
 | `date_to`   | YYYY-MM-DD | Inclusive (covers full day in UTC)                                                                       |
@@ -124,4 +124,3 @@ Codes: `invalid_query` (400), `invalid_slug` (400), `not_found` (404), `internal
 - `https://dailyjournal.news/llms.txt` — human-readable API summary
 - `https://dailyjournal.news/sitemap.xml` — full URL index
 - No auth, no keys, no rate limit currently. Be polite — cache and batch when sensible.
-- List responses are cached at the edge for 60s (`s-maxage=60, stale-while-revalidate=600`). Expect ~1 min lag on the very latest item; repeated identical queries are cheap.

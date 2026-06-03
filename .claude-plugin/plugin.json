@@ -1,7 +1,7 @@
 {
   "name": "daily-journal",
-  "description": "World news API in Portuguese — query Daily Journal's public API for current events, politics, economy, business, finance, technology, and sports. Aggregated coverage with cited source outlets.",
-  "version": "1.0.2",
+  "description": "World news API in Portuguese — query Daily Journal's public API for current events, politics, economy, business, finance, technology, science, and sports. Aggregated coverage with cited source outlets.",
+  "version": "1.0.3",
   "author": {
     "name": "Daily Journal"
   },
