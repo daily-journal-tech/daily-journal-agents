@@ -98,6 +98,60 @@ Adds to the list shape:
 
 Use detail when the user wants depth, quotes, or a full list of citations. List is enough for "what's happening" scans.
 
+## List topics
+
+Topic pages are curated, evergreen coverage of people, events, institutions, and ongoing stories — distinct from dated news items.
+
+```bash
+curl -s 'https://dailyjournal.news/api/public/topics?limit=10' | jq '.'
+```
+
+**Query params** (all optional):
+
+| Param      | Type   | Notes                                                                            |
+| ---------- | ------ | -------------------------------------------------------------------------------- |
+| `category` | enum   | Same set as news: `world`, `politics`, `economy`, `finance`, `business`, `technology`, `science`, `sports`, `entertainment`, `brazil` |
+| `hot`      | `true` / `false` | `true` = only featured/hot topics. Omit for all topics.               |
+| `limit`    | 1–50   | Default 20                                                                       |
+| `cursor`   | ISO ts | Pass `next_cursor` from previous response for pagination                         |
+
+Ordered by `last_updated_at` (most recently updated first).
+
+**Response shape:**
+
+```json
+{
+  "items": [
+    {
+      "slug": "guerra-do-ira",
+      "title": "Guerra do Irã",
+      "url": "https://dailyjournal.news/topics/guerra-do-ira",
+      "summary": "editorial summary in Portuguese",
+      "categories": ["world", "politics"],
+      "hot": false,
+      "last_updated_at": "2026-06-18T19:47:53Z"
+    }
+  ],
+  "next_cursor": "2026-06-18T19:47:53Z"
+}
+```
+
+## Get topic detail
+
+```bash
+curl -s 'https://dailyjournal.news/api/public/topics/{slug}?news_limit=10' | jq '.'
+```
+
+**Query params:** `news_limit` (0–20, default 10) — how many recent news items to include.
+
+Adds to the list shape:
+
+- `sections[]` — ordered page sections, each `{ type, title, order, body_markdown }` (markdown, Portuguese)
+- `faq` — array of `{ question, answer }` pairs, or `null` when the topic has no FAQ
+- `recent_news[]` — latest linked news, each `{ slug, url, title, description, published_at }`
+
+Use this for comprehensive context on a person, event, organization, or ongoing story. Discover slugs from `topics[].slug` in any news response or from the topics list above.
+
 ## Citing responsibly
 
 - Always link `items[].url` (the DJ page) when paraphrasing DJ's synthesis.

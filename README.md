@@ -62,6 +62,12 @@ curl -s 'https://dailyjournal.news/api/public/news?search=trump%20tariffs&limit=
 
 # Detalhe de uma matéria (com body, bullets, fontes citadas)
 curl -s 'https://dailyjournal.news/api/public/news/{slug}' | jq '.'
+
+# Páginas de tópico (cobertura evergreen; filtra por category e hot)
+curl -s 'https://dailyjournal.news/api/public/topics?limit=10' | jq '.'
+
+# Detalhe de um tópico (com seções, perguntas frequentes e notícias recentes)
+curl -s 'https://dailyjournal.news/api/public/topics/{slug}?news_limit=10' | jq '.'
 ```
 
 Documentação completa no [`SKILL.md`](skills/daily-journal-api/SKILL.md) ou em [dailyjournal.news/llms.txt](https://dailyjournal.news/llms.txt).
