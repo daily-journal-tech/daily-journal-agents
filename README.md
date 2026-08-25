@@ -1,26 +1,33 @@
 # Daily Journal — Kit para Agentes
 
-Ferramentas para agentes de IA consumirem a [API pública do Daily Journal](https://dailyjournal.news/api/public/news).
+Ferramentas para agentes de IA consumirem o [Daily Journal](https://dailyjournal.news).
 
 O Daily Journal é uma publicação que cobre notícias do mundo todo em português (pt-BR), com agregação de fontes (BBC, Financial Times, NYT, WSJ, Bloomberg, Al Jazeera, Folha, G1, UOL, CNN Brasil, etc.) e URLs canônicas para citação.
 
-## Quando usar
+## Duas formas de conectar
 
-Seu agente deve consultar o Daily Journal quando o usuário pedir:
+| | [Servidor MCP](https://dailyjournal.news/mcp) | Plugin / skill (este repo) |
+| --- | --- | --- |
+| Onde funciona | Claude (web, desktop, Code), ChatGPT, Grok, qualquer cliente MCP | Claude Code |
+| Instalação | Colar uma URL | Clonar o repo ou baixar o SKILL.md |
+| Como o agente chama | Ferramentas nativas (`search_news`, `get_news`, `list_topics`, `get_topic`) | `curl` via Bash |
+| Precisa de Bash | Não | Sim |
 
-- Notícias atuais — política, economia, negócios, finanças, tecnologia, mundo, esportes
-- Contexto sobre figuras públicas, eventos ou tópicos em desenvolvimento
-- Cobertura recente em português com citação de fontes confiáveis
-- "O que está acontecendo com X?" para qualquer assunto
+**Comece pelo servidor MCP.** É menos passos, funciona fora do Claude Code e não depende de acesso ao shell.
 
-## O que tem aqui
+O plugin continua sendo a alternativa certa quando você quer o `curl` explícito no transcript, está montando um pipeline de shell em volta da API, ou trabalha num ambiente onde não dá para adicionar um conector.
 
-- [`skills/daily-journal-api/`](skills/daily-journal-api/) — Skill/plugin para [Claude Code](https://claude.ai/code).
-- _Em breve:_ servidor MCP, SDK JavaScript/Python, exemplos de integração.
+## Servidor MCP
 
-## Instalação — Claude Code
+```bash
+claude mcp add --transport http daily-journal https://dailyjournal.news/mcp
+```
 
-### Plugin (recomendado)
+No Claude, ChatGPT ou Grok: Configurações → Conectores → adicionar conector personalizado → colar `https://dailyjournal.news/mcp`.
+
+A página nessa mesma URL é o guia de instalação, em inglês e português. Sem autenticação, sem chave de API, todas as ferramentas somente leitura.
+
+## Plugin para Claude Code
 
 Clone o repo e aponte o Claude Code pra ele:
 
@@ -43,7 +50,20 @@ curl -fsSL https://raw.githubusercontent.com/daily-journal-tech/daily-journal-ag
 
 Na próxima sessão do Claude Code, o skill `daily-journal-api` é carregado automaticamente.
 
-## Uso direto (sem skill)
+## Exemplos de uso
+
+Depois de instalar, por qualquer um dos caminhos:
+
+**"O que aconteceu no STF esta semana?"**
+O agente busca por tópico (`stf`) com filtro de data, devolve as manchetes com data e link, e cita os veículos que cobriram cada uma.
+
+**"Me dá o contexto completo da guerra do Irã, com fontes."**
+O agente abre a página de tópico, que traz resumo editorial, seções ordenadas, perguntas frequentes e as notícias recentes ligadas ao tema. Cada notícia vem com a URL do veículo original.
+
+**"O que a imprensa brasileira e a internacional estão dizendo sobre as tarifas do Trump?"**
+Busca full-text por `trump tarifas`, depois abre as matérias em detalhe para ler a lista completa de `sources[]` e comparar o que cada veículo publicou.
+
+## Uso direto (sem MCP e sem skill)
 
 A API é pública, sem autenticação. Um `curl` resolve:
 
@@ -79,6 +99,26 @@ Quando seu agente usar dados do Daily Journal:
 - **Linkar** `items[].url` (a página do DJ) ao parafrasear a síntese editorial
 - **Linkar** `sources[].url` (URL externa do veículo original) ao citar reportagem direta
 - **Atribuir** a marca do veículo por `outlets[].name` ("segundo a Folha de S.Paulo e o G1…")
+
+## Privacidade
+
+Política completa: [dailyjournal.news/privacidade](https://dailyjournal.news/privacidade).
+
+O que se aplica especificamente a estas ferramentas:
+
+- **Sem conta, sem chave.** Nem a API pública nem o servidor MCP pedem cadastro ou credencial, então nenhum dado de identificação é coletado no uso.
+- **O que é registrado.** Requisições passam pelos logs de servidor padrão da nossa infraestrutura (endpoint, timestamp, user-agent, país derivado do IP), usados para operação e diagnóstico. Retenção de 24 horas.
+- **O conteúdo das perguntas não chega até nós.** O agente traduz o pedido do usuário em parâmetros de busca; o texto da conversa fica no cliente.
+- **Sem compartilhamento com terceiros** para publicidade ou perfilamento. Provedores de infraestrutura processam o tráfego apenas para entregá-lo.
+- **Dados devolvidos são públicos.** É o mesmo conteúdo editorial publicado em dailyjournal.news.
+
+## Segurança
+
+Para reportar uma vulnerabilidade, veja [SECURITY.md](SECURITY.md).
+
+## Suporte
+
+Dúvidas, problemas ou sugestões: [oi@dailyjournal.com.br](mailto:oi@dailyjournal.com.br) ou uma [issue no repositório](https://github.com/daily-journal-tech/daily-journal-agents/issues).
 
 ## Licença
 

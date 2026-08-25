@@ -8,7 +8,16 @@ allowed-tools: Bash
 
 Free, unauthenticated JSON API. Base URL: `https://dailyjournal.news/api/public`.
 
-Global news coverage in Portuguese (pt-BR). Responses cite original outlets (BBC, Financial Times, NYT, WSJ, Bloomberg, Al Jazeera, Folha, G1, UOL, CNN Brasil, etc.) with canonical external URLs — always attribute when citing.
+Global news coverage in Portuguese (pt-BR). Responses carry the original outlets (BBC, Financial Times, NYT, WSJ, Bloomberg, Al Jazeera, Folha, G1, UOL, CNN Brasil, etc.) with canonical external URLs for attribution.
+
+> **This skill is the `curl` route. There is also an MCP server.**
+> `https://dailyjournal.news/mcp` exposes the same data as native tools
+> (`search_news`, `get_news`, `list_topics`, `get_topic`) with no Bash needed, and
+> works in Claude web and desktop, ChatGPT and Grok as well as Claude Code:
+> `claude mcp add --transport http daily-journal https://dailyjournal.news/mcp`.
+> This skill remains the better fit when the explicit `curl` belongs in the
+> transcript, when a shell pipeline wraps the API, or where adding a connector is
+> not an option. Running both is redundant, not harmful.
 
 ## When to use this skill
 
@@ -152,12 +161,14 @@ Adds to the list shape:
 
 Use this for comprehensive context on a person, event, organization, or ongoing story. Discover slugs from `topics[].slug` in any news response or from the topics list above.
 
-## Citing responsibly
+## Attribution fields
 
-- Always link `items[].url` (the DJ page) when paraphrasing DJ's synthesis.
-- Link `sources[].url` when quoting or citing original reporting.
-- Attribute outlet brands by `outlets[].name` (e.g. "according to BBC and Folha de S.Paulo…").
-- DJ content is in Portuguese; translate only when the user is not fluent.
+What each field identifies, for building citations:
+
+- `items[].url` — canonical Daily Journal page for the item. This is the URL that corresponds to DJ's own editorial synthesis.
+- `sources[].url` — external URL of the original outlet's article, on the outlet's own domain.
+- `outlets[].name` — the outlet's display brand, e.g. `Folha de S.Paulo`, `BBC`.
+- Headlines, summaries and body text are Portuguese (pt-BR).
 
 ## Errors
 
