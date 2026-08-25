@@ -27,6 +27,13 @@ No Claude, ChatGPT ou Grok: Configurações → Conectores → adicionar conecto
 
 A página nessa mesma URL é o guia de instalação, em inglês e português. Sem autenticação, sem chave de API, todas as ferramentas somente leitura.
 
+Quatro ferramentas: `search_news`, `get_news`, `list_topics` e `get_topic`. As
+páginas de tópico grandes voltam cortadas num orçamento de 25 mil caracteres,
+porque `guerra-do-ira` sozinha tem ~170 mil. O índice completo das seções vem
+sempre, e `sections_notice` diz qual chamada busca o que ficou de fora:
+`sections: ["linha-do-tempo"]`, ou `section_offset` para continuar uma seção
+maior que o orçamento.
+
 ## Plugin para Claude Code
 
 Clone o repo e aponte o Claude Code pra ele:

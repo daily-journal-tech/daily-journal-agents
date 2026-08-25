@@ -161,6 +161,41 @@ Adds to the list shape:
 
 Use this for comprehensive context on a person, event, organization, or ongoing story. Discover slugs from `topics[].slug` in any news response or from the topics list above.
 
+### Big topics: trim before you read
+
+This endpoint returns every section in full, because it also serves the web page.
+Most topics are small, around 3.6k characters of sections at the median, but the
+prominent ones are not, and those are the ones worth asking about. `guerra-do-ira`
+is about 170k characters, `guerra-ucrania-x-russia` 100k, `caso-banco-master` 62k.
+Piping one of those straight into context can blow a tool-result limit and leave
+you with nothing.
+
+Read the index first, then pull the section you need:
+
+```bash
+# 1. What sections exist, and how big is each?
+curl -s 'https://dailyjournal.news/api/public/topics/caso-banco-master?news_limit=0' \
+  | jq '.sections[] | {type, title, chars: (.body_markdown | length)}'
+
+# 2. Fetch just the section you want
+curl -s 'https://dailyjournal.news/api/public/topics/caso-banco-master?news_limit=0' \
+  | jq -r '.sections[] | select(.type == "linha-do-tempo") | .body_markdown'
+
+# 3. Or take the summary and the FAQ only. Cheap, and often enough
+curl -s 'https://dailyjournal.news/api/public/topics/caso-banco-master?news_limit=0' \
+  | jq '{summary, faq}'
+```
+
+`type` is a stable slug (`visao-geral`, `linha-do-tempo`, `principais-atores`,
+`termos-importantes`, `contexto-historico-e-desenvolvimento`) and is unique within
+a topic, so select on it rather than on the title.
+
+Over MCP this is handled for you. `get_topic` packs whole sections under a 25,000
+character budget, returns the rest as index entries with a null body, and says in
+`sections_notice` how to fetch them: call it again with
+`sections: ["linha-do-tempo"]`, or with `section_offset` to keep reading a section
+longer than the budget.
+
 ## Attribution fields
 
 What each field identifies, for building citations:
