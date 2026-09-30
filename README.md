@@ -118,9 +118,10 @@ Política completa: [dailyjournal.news/privacidade](https://dailyjournal.news/pr
 
 O que se aplica especificamente a estas ferramentas:
 
-- **Sem conta, sem chave.** Nem a API pública nem o servidor MCP pedem cadastro ou credencial, então nenhum dado de identificação é coletado no uso.
-- **O que é registrado.** Requisições passam pelos logs de servidor padrão da nossa infraestrutura (endpoint, timestamp, user-agent, país derivado do IP), usados para operação e diagnóstico. Retenção de 24 horas.
-- **O conteúdo das perguntas não chega até nós.** O agente traduz o pedido do usuário em parâmetros de busca; o texto da conversa fica no cliente.
+- **Sem conta, sem chave.** Nem a API pública nem o servidor MCP pedem cadastro ou credencial, então nenhum dado de identificação pessoal é coletado no uso.
+- **O que é registrado.** Requisições passam pelos logs de servidor padrão da nossa infraestrutura (endpoint, timestamp, user-agent, país derivado do IP), usados para operação e diagnóstico, com retenção de 24 horas.
+- **Métricas de uso do servidor MCP.** Cada conexão e cada chamada de ferramenta gera um evento anônimo na nossa ferramenta de análise (PostHog): nome e versão do cliente MCP, user-agent, a ferramenta chamada e os parâmetros de busca que o agente enviou (termo, categoria, tópico, slug, datas). Não há identificador de pessoa nem perfil de usuário. Usamos isso para saber quais agentes nos usam e o que procuram.
+- **O conteúdo da conversa não chega até nós.** O agente traduz o pedido do usuário em parâmetros de busca; só esses parâmetros chegam, o texto da conversa fica no cliente.
 - **Sem compartilhamento com terceiros** para publicidade ou perfilamento. Provedores de infraestrutura processam o tráfego apenas para entregá-lo.
 - **Dados devolvidos são públicos.** É o mesmo conteúdo editorial publicado em dailyjournal.news.
 
