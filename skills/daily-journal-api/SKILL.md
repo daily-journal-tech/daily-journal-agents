@@ -1,226 +1,58 @@
 ---
 name: daily-journal-api
-description: Query Daily Journal's public news API for world news coverage in Portuguese. Use when the user asks about current events globally — politics, economy, business, finance, technology, science, world affairs, sports — or asks for "the latest on X" for any topic, person, or event. Returns structured JSON with cited source outlets. Content is Portuguese (pt-BR).
-allowed-tools: Bash
+description: Brazilian and world news in Portuguese from Daily Journal, every story cited to the outlets that reported it (Folha, G1, UOL, Poder360, BBC, Guardian, FT, NYT, WSJ, Bloomberg, Al Jazeera). Use when the user asks about Brazilian current events — politics, Congresso, STF, Lula, eleições, economia, Petrobras, the Real, BC/Selic — wants news in Portuguese, wants to know how several outlets covered a story, or wants background on an ongoing story (a war, an election, a scandal, a public figure). Also when they mention Daily Journal.
 ---
 
-# Daily Journal Public API
+# Daily Journal
 
-Free, unauthenticated JSON API. Base URL: `https://dailyjournal.news/api/public`.
+Daily Journal (dailyjournal.news) is a Brazilian news publication in Portuguese
+(pt-BR). Each story is written from several outlets' reporting and keeps the list of
+those articles, so every claim can be traced to its source. Topic pages hold
+evergreen background on people, institutions and ongoing stories.
 
-Global news coverage in Portuguese (pt-BR). Responses carry the original outlets (BBC, Financial Times, NYT, WSJ, Bloomberg, Al Jazeera, Folha, G1, UOL, CNN Brasil, etc.) with canonical external URLs for attribution.
+## Tools
 
-> **This skill is the `curl` route. There is also an MCP server.**
-> `https://dailyjournal.news/mcp` exposes the same data as native tools
-> (`search_news`, `get_news`, `list_topics`, `get_topic`) with no Bash needed, and
-> works in Claude web and desktop, ChatGPT and Grok as well as Claude Code:
-> `claude mcp add --transport http daily-journal https://dailyjournal.news/mcp`.
-> This skill remains the better fit when the explicit `curl` belongs in the
-> transcript, when a shell pipeline wraps the API, or where adding a connector is
-> not an option. Running both is redundant, not harmful.
+This plugin connects the Daily Journal MCP server. Four read-only tools:
 
-## When to use this skill
+| Tool | Use it for |
+| --- | --- |
+| `search_news` | Finding stories. No arguments = the latest news. Filters: `category`, `topic` (slug), `date_from` / `date_to` (YYYY-MM-DD), `search` (full-text, Portuguese works best), `limit`, `cursor`. |
+| `get_news` | One story in full, by `slug` (not `id`): body, bullets and every source article with its URL and outlet. |
+| `list_topics` | Browsing topic pages. `hot: true` returns the stories Daily Journal is following most closely right now. |
+| `get_topic` | Background on one topic: summary, sections, FAQ, recent news. |
 
-- User asks about current events — politics, economy, business, finance, technology, science, world affairs, sports
-- User asks "what's happening with X?" for any topic, person, or event
-- User wants Portuguese-language coverage with cited sources
-- User mentions Daily Journal directly
+If the tools are not available (connector not added, or another client), read
+`references/curl-api.md` and call the same public API with `curl`. On claude.ai and
+in Cowork, the connector is added from the plugin's **Connectors** tab; mention that
+to the user if the tools are missing and there is no shell to fall back on.
 
-Skip when the user explicitly wants a different source or a non-news task.
+## Flow
 
-## List news
+1. **What's happening with X** → `search_news` with `search` (or `topic` if you
+   already know the slug). Scan titles and descriptions. Search in Portuguese:
+   `tarifas trump`, not `trump tariffs`.
+2. **Depth, quotes or "who reported this"** → `get_news` on the one or two stories
+   that matter. List results carry only the top outlets; `sources[]` in the detail
+   has every article.
+3. **Background, "explain", "what is", "how did we get here"** → `get_topic`. Topic
+   slugs come from `topics[].slug` on any news item, or from `list_topics`.
+4. **Big topics** come back trimmed to a 25k-character budget. Every section is
+   listed with its size; read `sections_notice` and call `get_topic` again with
+   `sections: ["<type>"]` for the part the user asked about. Don't fetch every
+   section of a large topic.
 
-```bash
-curl -s 'https://dailyjournal.news/api/public/news?limit=10' | jq '.'
-```
+`category` takes English keys: `world`, `politics`, `economy`, `finance`,
+`business`, `technology`, `science`, `sports`, `entertainment`, `brazil`.
 
-**Query params** (all optional):
+## Answering
 
-| Param       | Type       | Notes                                                                                                    |
-| ----------- | ---------- | -------------------------------------------------------------------------------------------------------- |
-| `category`  | enum       | `world`, `politics`, `economy`, `finance`, `business`, `technology`, `science`, `sports`, `entertainment`, `brazil` |
-| `topic`     | slug       | e.g. `emmanuel-macron`, `relacoes-eua-canada`, `stf`. Discover slugs from `topics[].slug` in any response. |
-| `date_from` | YYYY-MM-DD | Inclusive                                                                                                |
-| `date_to`   | YYYY-MM-DD | Inclusive (covers full day in UTC)                                                                       |
-| `search`    | text       | Full-text over headline/summary/body (prefix match; multi-word ANDs terms)                               |
-| `limit`     | 1–50       | Default 20                                                                                               |
-| `cursor`    | ISO ts     | Pass `next_cursor` from previous response for pagination                                                 |
-
-**Examples:**
-
-```bash
-# Latest world news
-curl -s 'https://dailyjournal.news/api/public/news?category=world&limit=5' | jq '.items[] | {title, url, outlets}'
-
-# Everything on a topic this week
-curl -s 'https://dailyjournal.news/api/public/news?topic=emmanuel-macron&date_from=2026-04-20&limit=20' | jq '.items[] | {title, published_at, url}'
-
-# Full-text search (combine with any filter)
-curl -s 'https://dailyjournal.news/api/public/news?search=trump%20tariffs&limit=10' | jq '.items[] | {title, url}'
-
-# Paginate
-curl -s 'https://dailyjournal.news/api/public/news?limit=20' | jq '.next_cursor'
-curl -s 'https://dailyjournal.news/api/public/news?limit=20&cursor=2026-04-17T20:00:00Z' | jq '.'
-```
-
-**Response shape:**
-
-```json
-{
-  "items": [
-    {
-      "id": "uuid",
-      "slug": "acordao-de-castro-nao-define-eleicao...",
-      "url": "https://dailyjournal.news/news/2026-04-17/acordao-de-castro...",
-      "title": "Acórdão de Castro não define eleição...",
-      "description": "summary in Portuguese",
-      "published_at": "2026-04-17T23:02:15Z",
-      "updated_at": null,
-      "categories": ["politics"],
-      "topics": [{ "slug": "stf", "title": "Supremo Tribunal Federal" }],
-      "source_count": 3,
-      "outlet_count": 2,
-      "outlets": [
-        { "slug": "g1", "name": "G1", "logo_url": null },
-        { "slug": "folha-de-spaulo", "name": "Folha de S.Paulo", "logo_url": null }
-      ]
-    }
-  ],
-  "next_cursor": "2026-04-17T22:48:00Z"
-}
-```
-
-`source_count` = number of articles aggregated. `outlet_count` = distinct parent brands. `outlets[]` contains the top 5 by coverage.
-
-## Get news detail
-
-```bash
-curl -s 'https://dailyjournal.news/api/public/news/{slug}' | jq '.'
-```
-
-Adds to the list shape:
-
-- `body` — full article in Portuguese (markdown)
-- `bullets` — 3–5 key points in Portuguese
-- `article_thumbnails` — hero images (optional)
-- `sources[]` — every cited article with `title`, `url` (external, to original outlet), `published_at`, `outlet` (object `{slug, name, logo_url}` or `null` when the source has no outlet mapping)
-
-Use detail when the user wants depth, quotes, or a full list of citations. List is enough for "what's happening" scans.
-
-## List topics
-
-Topic pages are curated, evergreen coverage of people, events, institutions, and ongoing stories — distinct from dated news items.
-
-```bash
-curl -s 'https://dailyjournal.news/api/public/topics?limit=10' | jq '.'
-```
-
-**Query params** (all optional):
-
-| Param      | Type   | Notes                                                                            |
-| ---------- | ------ | -------------------------------------------------------------------------------- |
-| `category` | enum   | Same set as news: `world`, `politics`, `economy`, `finance`, `business`, `technology`, `science`, `sports`, `entertainment`, `brazil` |
-| `hot`      | `true` / `false` | `true` = only featured/hot topics. Omit for all topics.               |
-| `limit`    | 1–50   | Default 20                                                                       |
-| `cursor`   | ISO ts | Pass `next_cursor` from previous response for pagination                         |
-
-Ordered by `last_updated_at` (most recently updated first).
-
-**Response shape:**
-
-```json
-{
-  "items": [
-    {
-      "slug": "guerra-do-ira",
-      "title": "Guerra do Irã",
-      "url": "https://dailyjournal.news/topics/guerra-do-ira",
-      "summary": "editorial summary in Portuguese",
-      "categories": ["world", "politics"],
-      "hot": false,
-      "last_updated_at": "2026-06-18T19:47:53Z"
-    }
-  ],
-  "next_cursor": "2026-06-18T19:47:53Z"
-}
-```
-
-## Get topic detail
-
-```bash
-curl -s 'https://dailyjournal.news/api/public/topics/{slug}?news_limit=10' | jq '.'
-```
-
-**Query params:** `news_limit` (0–20, default 10) — how many recent news items to include.
-
-Adds to the list shape:
-
-- `sections[]` — ordered page sections, each `{ type, title, order, body_markdown }` (markdown, Portuguese)
-- `faq` — array of `{ question, answer }` pairs, or `null` when the topic has no FAQ
-- `recent_news[]` — latest linked news, each `{ slug, url, title, description, published_at }`
-
-Use this for comprehensive context on a person, event, organization, or ongoing story. Discover slugs from `topics[].slug` in any news response or from the topics list above.
-
-### Big topics: trim before you read
-
-This endpoint returns every section in full, because it also serves the web page.
-Most topics are small, around 3.6k characters of sections at the median, but the
-prominent ones are not, and those are the ones worth asking about. `guerra-do-ira`
-is about 170k characters, `guerra-ucrania-x-russia` 100k, `caso-banco-master` 62k.
-Piping one of those straight into context can blow a tool-result limit and leave
-you with nothing.
-
-Read the index first, then pull the section you need:
-
-```bash
-# 1. What sections exist, and how big is each?
-curl -s 'https://dailyjournal.news/api/public/topics/caso-banco-master?news_limit=0' \
-  | jq '.sections[] | {type, title, chars: (.body_markdown | length)}'
-
-# 2. Fetch just the section you want
-curl -s 'https://dailyjournal.news/api/public/topics/caso-banco-master?news_limit=0' \
-  | jq -r '.sections[] | select(.type == "linha-do-tempo") | .body_markdown'
-
-# 3. Or take the summary and the FAQ only. Cheap, and often enough
-curl -s 'https://dailyjournal.news/api/public/topics/caso-banco-master?news_limit=0' \
-  | jq '{summary, faq}'
-```
-
-`type` is a stable slug (`visao-geral`, `linha-do-tempo`, `principais-atores`,
-`termos-importantes`, `contexto-historico-e-desenvolvimento`) and is unique within
-a topic, so select on it rather than on the title.
-
-Over MCP this is handled for you. `get_topic` packs whole sections under a 25,000
-character budget, returns the rest as index entries with a null body, and says in
-`sections_notice` how to fetch them: call it again with
-`sections: ["linha-do-tempo"]`, or with `section_offset` to keep reading a section
-longer than the budget.
-
-## Attribution fields
-
-What each field identifies, for building citations:
-
-- `items[].url` — canonical Daily Journal page for the item. This is the URL that corresponds to DJ's own editorial synthesis.
-- `sources[].url` — external URL of the original outlet's article, on the outlet's own domain.
-- `outlets[].name` — the outlet's display brand, e.g. `Folha de S.Paulo`, `BBC`.
-- Headlines, summaries and body text are Portuguese (pt-BR).
-
-## Errors
-
-Consistent shape across endpoints:
-
-```json
-{
-  "error": "invalid_query",
-  "message": "limit: Number must be less than or equal to 50",
-  "fields": { "limit": ["..."] }
-}
-```
-
-Codes: `invalid_query` (400), `invalid_slug` (400), `not_found` (404), `internal_error` (500).
-
-## Discovery
-
-- `https://dailyjournal.news/llms.txt` — human-readable API summary
-- `https://dailyjournal.news/sitemap.xml` — full URL index
-- No auth, no keys, no rate limit currently. Be polite — cache and batch when sensible.
+- Reply in the user's language. The content is in Portuguese; translate when the
+  user writes in another language.
+- Give dates. News moves fast and `published_at` is what tells the user how fresh it is.
+- **Cite on every story you use**: link the Daily Journal `url` for the summary, and
+  name the outlets (`outlets[].name`) — "segundo Folha e BBC". When quoting an
+  outlet's own reporting, link its article from `sources[].url`.
+- When outlets disagree or cover a story differently, say so; that comparison is
+  what the source list is for.
+- Don't present Daily Journal's synthesis as the original outlet's words, or the
+  reverse.

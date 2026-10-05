@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "daily-journal": {
+      "type": "http",
+      "url": "https://dailyjournal.news/mcp"
+    }
+  }
+}

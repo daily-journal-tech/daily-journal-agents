@@ -1,11 +1,29 @@
 {
   "name": "daily-journal",
-  "description": "World news API in Portuguese — query Daily Journal's public API for current events, politics, economy, business, finance, technology, science, and sports. Aggregated coverage with cited source outlets.",
-  "version": "1.1.0",
+  "displayName": "Daily Journal",
+  "description": "Brazilian and world news in Portuguese, with every story cited to its original outlets (Folha, G1, BBC, FT, NYT, Bloomberg and more). Search the news, open a story with all its sources, or get the full background on an ongoing story. Includes a daily briefing and a topic explainer.",
+  "version": "1.2.0",
   "author": {
-    "name": "Daily Journal"
+    "name": "Daily Journal",
+    "url": "https://dailyjournal.news"
   },
   "homepage": "https://dailyjournal.news",
   "repository": "https://github.com/daily-journal-tech/daily-journal-agents",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "news",
+    "brazil",
+    "portuguese",
+    "noticias",
+    "current-events",
+    "politics",
+    "economy",
+    "elections",
+    "citations",
+    "media"
+  ],
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://dailyjournal.news/mcp",
+  "supportUrl": "https://github.com/daily-journal-tech/daily-journal-agents/issues",
+  "privacyPolicyUrl": "https://dailyjournal.news/privacidade"
 }

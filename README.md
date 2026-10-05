@@ -6,16 +6,13 @@ O Daily Journal é uma publicação que cobre notícias do mundo todo em portugu
 
 ## Duas formas de conectar
 
-| | [Servidor MCP](https://dailyjournal.news/mcp) | Plugin / skill (este repo) |
+| | [Servidor MCP](https://dailyjournal.news/mcp) | Plugin (este repo) |
 | --- | --- | --- |
-| Onde funciona | Claude (web, desktop, Code), ChatGPT, Grok, qualquer cliente MCP | Claude Code |
-| Instalação | Colar uma URL | Clonar o repo ou baixar o SKILL.md |
-| Como o agente chama | Ferramentas nativas (`search_news`, `get_news`, `list_topics`, `get_topic`) | `curl` via Bash |
-| Precisa de Bash | Não | Sim |
+| Onde funciona | Claude (web, desktop, Code), ChatGPT, Grok, qualquer cliente MCP | Claude (web, desktop, mobile), Cowork, Claude Code |
+| Instalação | Colar uma URL | Diretório de plugins do Claude, ou clonar o repo |
+| O que traz | As quatro ferramentas (`search_news`, `get_news`, `list_topics`, `get_topic`) | O mesmo servidor MCP, mais um skill que ensina o fluxo e a citação, e os comandos `/resumo` e `/topico` |
 
-**Comece pelo servidor MCP.** É menos passos, funciona fora do Claude Code e não depende de acesso ao shell.
-
-O plugin continua sendo a alternativa certa quando você quer o `curl` explícito no transcript, está montando um pipeline de shell em volta da API, ou trabalha num ambiente onde não dá para adicionar um conector.
+O plugin inclui o servidor MCP (`.mcp.json`), então não é preciso instalar os dois. No claude.ai e no Cowork, o conector aparece na aba **Connectors** do plugin; conecte por lá (sem login, sem chave). Fora do Claude, use o servidor MCP direto.
 
 ## Servidor MCP
 
@@ -34,25 +31,33 @@ sempre, e `sections_notice` diz qual chamada busca o que ficou de fora:
 `sections: ["linha-do-tempo"]`, ou `section_offset` para continuar uma seção
 maior que o orçamento.
 
-## Plugin para Claude Code
+## Plugin
 
-Clone o repo e aponte o Claude Code pra ele:
+No Claude: **Customize → Plugins → Discover**, procure "Daily Journal" e instale. Depois conecte o servidor na aba **Connectors** do plugin.
+
+No Claude Code, a partir do repo:
 
 ```bash
 git clone https://github.com/daily-journal-tech/daily-journal-agents.git
 claude --plugin-dir ./daily-journal-agents
 ```
 
-O skill fica disponível como `daily-journal:daily-journal-api` e dispara automaticamente quando o usuário pergunta sobre notícias.
+O que vem no plugin:
+
+- **Servidor MCP** `daily-journal`: as quatro ferramentas.
+- **Skill** `daily-journal-api`: quando usar cada ferramenta, como lidar com tópicos grandes e como citar. Dispara sozinho em perguntas sobre notícias do Brasil. Se as ferramentas não estiverem conectadas e houver shell, cai para `curl` na API pública ([`references/curl-api.md`](skills/daily-journal-api/references/curl-api.md)).
+- **`/daily-journal:resumo [tema]`**: resumo do dia, com data, link e veículos de cada notícia.
+- **`/daily-journal:topico <tema>`**: contexto de uma pessoa, instituição ou história em andamento, a partir da página de tópico.
 
 ### Skill avulso
 
-Se preferir instalar só o skill, sem a estrutura de plugin:
+Se preferir instalar só o skill, sem a estrutura de plugin (ele usa `curl`, então precisa de shell):
 
 ```bash
-mkdir -p ~/.claude/skills/daily-journal-api
-curl -fsSL https://raw.githubusercontent.com/daily-journal-tech/daily-journal-agents/main/skills/daily-journal-api/SKILL.md \
-  -o ~/.claude/skills/daily-journal-api/SKILL.md
+D=~/.claude/skills/daily-journal-api; R=https://raw.githubusercontent.com/daily-journal-tech/daily-journal-agents/main/skills/daily-journal-api
+mkdir -p "$D/references"
+curl -fsSL "$R/SKILL.md" -o "$D/SKILL.md"
+curl -fsSL "$R/references/curl-api.md" -o "$D/references/curl-api.md"
 ```
 
 Na próxima sessão do Claude Code, o skill `daily-journal-api` é carregado automaticamente.
@@ -97,7 +102,7 @@ curl -s 'https://dailyjournal.news/api/public/topics?limit=10' | jq '.'
 curl -s 'https://dailyjournal.news/api/public/topics/{slug}?news_limit=10' | jq '.'
 ```
 
-Documentação completa no [`SKILL.md`](skills/daily-journal-api/SKILL.md) ou em [dailyjournal.news/llms.txt](https://dailyjournal.news/llms.txt).
+Documentação completa em [`references/curl-api.md`](skills/daily-journal-api/references/curl-api.md) ou em [dailyjournal.news/llms.txt](https://dailyjournal.news/llms.txt).
 
 ## Como citar
 
