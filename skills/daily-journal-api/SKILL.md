@@ -22,9 +22,8 @@ This plugin connects the Daily Journal MCP server. Four read-only tools:
 | `get_topic` | Background on one topic: summary, sections, FAQ, recent news. |
 
 If the tools are not available (connector not added, or another client), read
-`references/curl-api.md` and call the same public API with `curl`. On claude.ai and
-in Cowork, the connector is added from the plugin's **Connectors** tab; mention that
-to the user if the tools are missing and there is no shell to fall back on.
+`references/curl-api.md` and call the same public API with `curl`. If there is no shell fallback, explain that the Daily Journal MCP connection
+needs to be enabled in the host application before these tools can be used.
 
 ## Flow
 
@@ -42,7 +41,14 @@ to the user if the tools are missing and there is no shell to fall back on.
    section of a large topic.
 
 `category` takes English keys: `world`, `politics`, `economy`, `finance`,
-`business`, `technology`, `science`, `sports`, `entertainment`, `brazil`.
+`business`, `agribusiness`, `technology`, `science`, `sports`, `entertainment`, `brazil`.
+
+## Coverage limits
+
+The tools only read public news and topics. They cannot publish, edit, or retrieve
+private subscriber data. Search may return partial or loosely related matches;
+check relevance before claiming coverage. If there is no relevant evidence, say
+so rather than inventing a story or sources.
 
 ## Answering
 

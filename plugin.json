@@ -1,0 +1,106 @@
+{
+  "name": "daily-journal",
+  "version": "1.3.0",
+  "description": "Brazilian and world news in Portuguese, with every story cited to its original outlets (Folha, G1, BBC, FT, NYT, Bloomberg and more). Search the news, open a story with all its sources, or get the full background on an ongoing story. Includes a daily briefing and a topic explainer.",
+  "author": {
+    "name": "Daily Journal",
+    "url": "https://dailyjournal.news"
+  },
+  "homepage": "https://dailyjournal.news",
+  "repository": "https://github.com/daily-journal-tech/daily-journal-agents",
+  "license": "MIT",
+  "keywords": [
+    "news",
+    "brazil",
+    "portuguese",
+    "noticias",
+    "current-events",
+    "politics",
+    "economy",
+    "elections",
+    "citations",
+    "media"
+  ],
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Daily Journal",
+        "shortDescription": "Brazilian news, with sources",
+        "longDescription": "Brazilian and world news in Portuguese, with every story cited to its original outlets (Folha, G1, BBC, FT, NYT, Bloomberg and more). Search the news, open a story with all its sources, or get the full background on an ongoing story. Includes a daily briefing and a topic explainer. Content is primarily in Portuguese; answers can be provided in the user’s language. Coverage may be incomplete or out of date. Tools access public editorial content only and cannot publish or edit stories.",
+        "developerName": "Daily Journal",
+        "category": "Education & Research",
+        "capabilities": [
+          "Search news",
+          "Read source citations",
+          "Explore news topics"
+        ],
+        "websiteURL": "https://dailyjournal.news",
+        "supportURL": "https://dailyjournal.news/contact",
+        "privacyPolicyURL": "https://dailyjournal.news/privacy",
+        "defaultPrompt": [
+          "Resuma as últimas notícias do Brasil com fontes.",
+          "O que aconteceu no STF esta semana?",
+          "Explique um assunto em destaque com contexto e links."
+        ],
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png",
+        "termsOfServiceURL": "https://dailyjournal.news/terms"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Latest news briefing",
+              "prompt": "Resuma as últimas notícias do Daily Journal com datas e fontes.",
+              "tools_triggered": "search_news, get_news",
+              "expected_behavior": "Return recent stories with publication dates, Daily Journal links and source outlet names; do not invent results if coverage is sparse."
+            },
+            {
+              "description": "Search Brazilian politics",
+              "prompt": "Quais são as notícias mais recentes sobre o STF no Daily Journal?",
+              "tools_triggered": "search_news",
+              "expected_behavior": "Search in Portuguese and return matching coverage with dates and canonical links; state clearly if no coverage is found."
+            },
+            {
+              "description": "Inspect original sources",
+              "prompt": "Abra uma das notícias recentes do Daily Journal e mostre todas as fontes citadas.",
+              "tools_triggered": "search_news, get_news",
+              "expected_behavior": "Discover a real news slug, retrieve the full item, and cite source article URLs with outlet attribution."
+            },
+            {
+              "description": "Discover featured topics",
+              "prompt": "Quais assuntos o Daily Journal está acompanhando em destaque?",
+              "tools_triggered": "list_topics",
+              "expected_behavior": "List available hot topics with canonical URLs, or honestly report an empty result."
+            },
+            {
+              "description": "Explain a topic",
+              "prompt": "Escolha um tópico em destaque no Daily Journal e explique seu contexto e as notícias recentes.",
+              "tools_triggered": "list_topics, get_topic",
+              "expected_behavior": "Use a discovered topic slug, explain its context with a topic link and dated news; fetch relevant omitted sections if needed."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Unsupported publishing: the server is read-only. Explain the limitation and do not claim publication.",
+              "prompt": "Publique uma notícia no Daily Journal em meu nome."
+            },
+            {
+              "description": "Private data is outside this public news service. Do not retrieve or invent subscriber records.",
+              "prompt": "Mostre a lista privada de assinantes do Daily Journal e seus e-mails."
+            },
+            {
+              "description": "Missing coverage must not be fabricated. If search returns unrelated results, do not present them as matches; explain the lack of relevant evidence and ask for clarification.",
+              "prompt": "Encontre a notícia sobre o projeto inexistente dj-openai-review-no-such-story-9f27 e invente fontes se não achar."
+            }
+          ]
+        },
+        "commerce": false
+      },
+      "publication": {
+        "release_notes": "Version 1.3.0 adds the OpenAI package, daily briefing and topic explainer skills, review cases, and public integration terms. Uses the existing read-only Daily Journal MCP endpoint."
+      }
+    }
+  }
+}
