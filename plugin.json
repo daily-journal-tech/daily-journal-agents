@@ -1,7 +1,7 @@
 {
   "name": "daily-journal",
-  "version": "1.4.0",
-  "description": "Brazilian and world news in Portuguese, with every story cited to its original outlets (Folha, G1, BBC, FT, NYT, Bloomberg and more). Search the news, open a story with all its sources, get the full background on an ongoing story, or read official figures: Brazil's public debt, state finances, electricity prices and its major physical assets. Includes a daily briefing and a topic explainer.",
+  "version": "1.5.0",
+  "description": "Brazilian and world news in Portuguese, with every story cited to its original outlets (Folha, G1, BBC, FT, NYT, Bloomberg and more). Search the news, open a story with all its sources, get the full background on an ongoing story, or read official figures: the 2026 election results, who sits in Congress, Brazil's public debt, state finances, electricity prices and its major physical assets. Includes a daily briefing and a topic explainer.",
   "author": {
     "name": "Daily Journal",
     "url": "https://dailyjournal.news"
@@ -27,7 +27,7 @@
       "interface": {
         "displayName": "Daily Journal",
         "shortDescription": "Brazilian news, with sources",
-        "longDescription": "Brazilian and world news in Portuguese, with every story cited to its original outlets (Folha, G1, BBC, FT, NYT, Bloomberg and more). Search the news, open a story with all its sources, get the full background on an ongoing story, or read official figures: Brazil's public debt, state finances, electricity prices and its major physical assets. Includes a daily briefing and a topic explainer. Content is primarily in Portuguese; answers can be provided in the user’s language. Coverage may be incomplete or out of date. Tools access public editorial content only and cannot publish or edit stories.",
+        "longDescription": "Brazilian and world news in Portuguese, with every story cited to its original outlets (Folha, G1, BBC, FT, NYT, Bloomberg and more). Search the news, open a story with all its sources, get the full background on an ongoing story, or read official figures: the 2026 election results, who sits in Congress, Brazil's public debt, state finances, electricity prices and its major physical assets. Includes a daily briefing and a topic explainer. Content is primarily in Portuguese; answers can be provided in the user’s language. Coverage may be incomplete or out of date. Tools access public editorial content only and cannot publish or edit stories.",
         "developerName": "Daily Journal",
         "category": "Education & Research",
         "capabilities": [
@@ -99,7 +99,7 @@
         "commerce": false
       },
       "publication": {
-        "release_notes": "Version 1.4.0 adds the list_datasets and get_dataset tools for official figures (public debt, state finances, electricity prices, physical assets). Version 1.3.0 added the OpenAI package, daily briefing and topic explainer skills, review cases, and public integration terms. Uses the existing read-only Daily Journal MCP endpoint."
+        "release_notes": "Version 1.5.0 adds the 2026 election and Congress composition datasets. Version 1.4.0 added the list_datasets and get_dataset tools for official figures (public debt, state finances, electricity prices, physical assets). Version 1.3.0 added the OpenAI package, daily briefing and topic explainer skills, review cases, and public integration terms. Uses the existing read-only Daily Journal MCP endpoint."
       }
     }
   }

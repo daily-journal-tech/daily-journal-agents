@@ -26,8 +26,8 @@ A página nessa mesma URL é o guia de instalação, em inglês e português. Se
 
 Seis ferramentas: `search_news`, `get_news`, `list_topics` e `get_topic` para
 notícias e contexto, `list_datasets` e `get_dataset` para as bases de dados
-(dívida pública, contas dos estados e capitais, preço da eletricidade, mapa dos
-ativos do Brasil). As bases voltam cortadas no mesmo orçamento, por `path`,
+(eleições de 2026, composição da Câmara e do Senado, dívida pública, contas dos
+estados e capitais, preço da eletricidade, mapa dos ativos do Brasil). As bases voltam cortadas no mesmo orçamento, por `path`,
 `where`, `fields` e páginas de linhas. As
 páginas de tópico grandes voltam cortadas num orçamento de 25 mil caracteres,
 porque `guerra-do-ira` sozinha tem ~170 mil. O índice completo das seções vem

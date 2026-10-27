@@ -175,8 +175,9 @@ longer than the budget.
 
 ## Datasets
 
-Official figures Daily Journal compiles: public debt, state and capital finances,
-electricity prices, the map of Brazil's physical assets. Start with the catalogue:
+Official figures Daily Journal compiles: the 2026 election, the composition of the
+Câmara and the Senado, public debt, state and capital finances, electricity prices, the
+map of Brazil's physical assets. Start with the catalogue:
 
 ```bash
 curl -s 'https://dailyjournal.news/api/public/datasets' | jq '.datasets[] | {name, summary, key, params}'
@@ -196,6 +197,11 @@ larger as an `outline` of its fields and sizes, and `notice` names the next call
 | anything else     | Goes to the dataset, e.g. `segment=business` for `electricity-prices`                   |
 
 ```bash
+# Women elected to the Senate in 2026
+curl -sG 'https://dailyjournal.news/api/public/datasets/eleicoes-2026' \
+  --data-urlencode key=senador --data-urlencode outcome=elected --data-urlencode path=candidates \
+  --data-urlencode 'where={"gender":"feminino"}' --data-urlencode fields=ballot_name,uf,party | jq '.data'
+
 # Assets in Pará: name, type, owner
 curl -sG 'https://dailyjournal.news/api/public/datasets/mapa' \
   --data-urlencode path=pins --data-urlencode 'where={"uf":"PA"}' \

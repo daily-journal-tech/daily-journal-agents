@@ -1,6 +1,6 @@
 ---
 name: daily-journal-api
-description: Brazilian and world news in Portuguese from Daily Journal, every story cited to the outlets that reported it (Folha, G1, UOL, Poder360, BBC, Guardian, FT, NYT, WSJ, Bloomberg, Al Jazeera). Use when the user asks about Brazilian current events — politics, Congresso, STF, Lula, eleições, economia, Petrobras, the Real, BC/Selic — wants news in Portuguese, wants to know how several outlets covered a story, or wants background on an ongoing story (a war, an election, a scandal, a public figure). Also for official figures Daily Journal keeps as datasets: Brazil's public debt, the payroll, revenue and spending of Brazilian states and capitals, retail electricity prices by country, Brazilian state and distributor, and Brazil's major physical assets (mines, oil fields, power plants, ports) with owners and output. Also when they mention Daily Journal.
+description: Brazilian and world news in Portuguese from Daily Journal, every story cited to the outlets that reported it (Folha, G1, UOL, Poder360, BBC, Guardian, FT, NYT, WSJ, Bloomberg, Al Jazeera). Use when the user asks about Brazilian current events — politics, Congresso, STF, Lula, eleições, economia, Petrobras, the Real, BC/Selic — wants news in Portuguese, wants to know how several outlets covered a story, or wants background on an ongoing story (a war, an election, a scandal, a public figure). Also for official figures Daily Journal keeps as datasets: the 2026 Brazilian election (every candidate, who was elected, gender, party, votes), who sits in the Câmara and the Senado today, Brazil's public debt, the payroll, revenue and spending of Brazilian states and capitals, retail electricity prices by country, Brazilian state and distributor, and Brazil's major physical assets (mines, oil fields, power plants, ports) with owners and output. Also when they mention Daily Journal.
 ---
 
 # Daily Journal
@@ -30,8 +30,9 @@ needs to be enabled in the host application before these tools can be used.
 
 ## Flow
 
-0. **A figure, a count, a ranking or a series** (how much debt, which state
-   spends most on payroll, the electricity price in Germany, who owns a mine) →
+0. **A figure, a count, a ranking or a series** (how many women were elected
+   to the Senate, how many votes a deputy got, which state spends most on payroll, the
+   electricity price in Germany, who owns a mine) →
    `get_dataset` first, news after for what the figure means. Our news can quote
    several numbers for one fact; the dataset holds the one figure with its date.
 1. **What's happening with X** → `search_news` with `search` (or `topic` if you
