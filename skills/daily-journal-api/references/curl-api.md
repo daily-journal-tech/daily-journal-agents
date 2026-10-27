@@ -173,6 +173,44 @@ character budget, returns the rest as index entries with a null body, and says i
 `sections: ["linha-do-tempo"]`, or with `section_offset` to keep reading a section
 longer than the budget.
 
+## Datasets
+
+Official figures Daily Journal compiles: public debt, state and capital finances,
+electricity prices, the map of Brazil's physical assets. Start with the catalogue:
+
+```bash
+curl -s 'https://dailyjournal.news/api/public/datasets' | jq '.datasets[] | {name, summary, key, params}'
+```
+
+Read one with `/api/public/datasets/{name}`. The response is cut to 25,000
+characters: a list comes back a page of rows at a time with `next_offset`, anything
+larger as an `outline` of its fields and sizes, and `notice` names the next call.
+
+| Param             | Notes                                                                                   |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| `key`             | One entry: an area code (`BRA-SP`), a UF (`SP`), a series group (`headline`), a pin id  |
+| `path`            | Dot path into the data: keys and array indexes (`pins`, `0.revenue`)                    |
+| `where`           | JSON, equality on row fields; strings ignore case (`{"uf":"PA"}`)                       |
+| `fields`          | Comma list of fields to keep                                                            |
+| `offset`, `limit` | Window over the rows                                                                    |
+| anything else     | Goes to the dataset, e.g. `segment=business` for `electricity-prices`                   |
+
+```bash
+# Assets in Pará: name, type, owner
+curl -sG 'https://dailyjournal.news/api/public/datasets/mapa' \
+  --data-urlencode path=pins --data-urlencode 'where={"uf":"PA"}' \
+  --data-urlencode fields=nome,tipo,dono,pais | jq '.data'
+
+# Household electricity price in every Brazilian state
+curl -sG 'https://dailyjournal.news/api/public/datasets/electricity-prices' \
+  --data-urlencode key=BRA --data-urlencode path=subnational \
+  --data-urlencode 'where={"kind":"Estado"}' --data-urlencode fields=code,name,price,period_label | jq '.data'
+```
+
+Each response carries `page_url`. Cite it with the original publisher named in the
+data. `raw_api` in the catalogue gives the unsliced JSON (and `?format=csv` where the
+dataset has it) for a client that can take the whole payload.
+
 ## Attribution fields
 
 What each field identifies, for building citations:

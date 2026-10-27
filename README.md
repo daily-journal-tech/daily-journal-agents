@@ -10,7 +10,7 @@ O Daily Journal é uma publicação que cobre notícias do mundo todo em portugu
 | --- | --- | --- |
 | Onde funciona | Claude (web, desktop, Code), ChatGPT, Grok, qualquer cliente MCP | Claude (web, desktop, mobile), Cowork, Claude Code |
 | Instalação | Colar uma URL | Diretório de plugins do Claude, ou clonar o repo |
-| O que traz | As quatro ferramentas (`search_news`, `get_news`, `list_topics`, `get_topic`) | O mesmo servidor MCP, mais um skill que ensina o fluxo e a citação, e os comandos `/resumo` e `/topico` |
+| O que traz | As seis ferramentas (`search_news`, `get_news`, `list_topics`, `get_topic`, `list_datasets`, `get_dataset`) | O mesmo servidor MCP, mais um skill que ensina o fluxo e a citação, e os comandos `/resumo` e `/topico` |
 
 O plugin inclui o servidor MCP (`.mcp.json`), então não é preciso instalar os dois. No claude.ai e no Cowork, o conector aparece na aba **Connectors** do plugin; conecte por lá (sem login, sem chave). Fora do Claude, use o servidor MCP direto.
 
@@ -24,7 +24,11 @@ No Claude, ChatGPT ou Grok: Configurações → Conectores → adicionar conecto
 
 A página nessa mesma URL é o guia de instalação, em inglês e português. Sem autenticação, sem chave de API, todas as ferramentas somente leitura.
 
-Quatro ferramentas: `search_news`, `get_news`, `list_topics` e `get_topic`. As
+Seis ferramentas: `search_news`, `get_news`, `list_topics` e `get_topic` para
+notícias e contexto, `list_datasets` e `get_dataset` para as bases de dados
+(dívida pública, contas dos estados e capitais, preço da eletricidade, mapa dos
+ativos do Brasil). As bases voltam cortadas no mesmo orçamento, por `path`,
+`where`, `fields` e páginas de linhas. As
 páginas de tópico grandes voltam cortadas num orçamento de 25 mil caracteres,
 porque `guerra-do-ira` sozinha tem ~170 mil. O índice completo das seções vem
 sempre, e `sections_notice` diz qual chamada busca o que ficou de fora:
