@@ -175,9 +175,8 @@ longer than the budget.
 
 ## Datasets
 
-Official figures Daily Journal compiles: the 2026 election, the composition of the
-Câmara and the Senado, public debt, state and capital finances, electricity prices, the
-map of Brazil's physical assets. Start with the catalogue:
+Official figures Daily Journal compiles from official sources. The catalogue lists every
+dataset, with its key and parameters:
 
 ```bash
 curl -s 'https://dailyjournal.news/api/public/datasets' | jq '.datasets[] | {name, summary, key, params}'

@@ -1,8 +1,8 @@
 {
   "name": "daily-journal",
   "displayName": "Daily Journal",
-  "description": "Brazilian and world news in Portuguese, with every story cited to its original outlets (Folha, G1, BBC, FT, NYT, Bloomberg and more). Search the news, open a story with all its sources, get the full background on an ongoing story, or read official figures: the 2026 election results, who sits in Congress, Brazil's public debt, state finances, electricity prices and its major physical assets. Includes a daily briefing and a topic explainer.",
-  "version": "1.5.0",
+  "description": "Brazilian and world news in Portuguese, with every story cited to its original outlets (Folha, G1, BBC, FT, NYT, Bloomberg and more). Search the news, open a story with all its sources, get the full background on an ongoing story, or read official figures: the 2026 election results, who sits in Congress, Brazil's public debt, state finances, state-owned companies, electricity prices and its major physical assets. Includes a daily briefing and a topic explainer.",
+  "version": "1.6.0",
   "author": {
     "name": "Daily Journal",
     "url": "https://dailyjournal.news"
