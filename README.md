@@ -91,7 +91,7 @@ curl -s 'https://dailyjournal.news/api/public/news?limit=10' | jq '.'
 # Por categoria
 curl -s 'https://dailyjournal.news/api/public/news?category=world&limit=5' | jq '.items[] | {title, url, outlets}'
 
-# Por tópico (slugs descobertos em items[].topics[].slug)
+# Por tópico (slug achado em /topics?search=; slug errado responde 404 com sugestões)
 curl -s 'https://dailyjournal.news/api/public/news?topic=emmanuel-macron&limit=10' | jq '.'
 
 # Busca full-text (combina com qualquer filtro)
@@ -99,6 +99,9 @@ curl -s 'https://dailyjournal.news/api/public/news?search=trump%20tariffs&limit=
 
 # Detalhe de uma matéria (com body, bullets, fontes citadas)
 curl -s 'https://dailyjournal.news/api/public/news/{slug}' | jq '.'
+
+# Achar um tópico pelo nome (qualquer ordem de palavras, tolera acento e erro de digitação)
+curl -s 'https://dailyjournal.news/api/public/topics?search=banco%20master&limit=5' | jq '.items[] | {slug, title}'
 
 # Páginas de tópico (cobertura evergreen; filtra por category e hot)
 curl -s 'https://dailyjournal.news/api/public/topics?limit=10' | jq '.'

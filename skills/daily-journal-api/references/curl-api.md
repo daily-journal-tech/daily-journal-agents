@@ -3,7 +3,8 @@
 The fallback route, for when the Daily Journal MCP tools are not connected and the
 environment has a shell with network access. Same data as the MCP tools.
 
-Base URL: `https://dailyjournal.news/api/public`. Free, no auth, no key.
+Base URL: `https://dailyjournal.news/api/public`. Free, no auth, no key. A `GET` on it
+lists every endpoint, its parameters and the category values.
 
 ## List news
 
@@ -16,7 +17,7 @@ curl -s 'https://dailyjournal.news/api/public/news?limit=10' | jq '.'
 | Param       | Type       | Notes                                                                                                    |
 | ----------- | ---------- | -------------------------------------------------------------------------------------------------------- |
 | `category`  | enum       | `world`, `politics`, `economy`, `finance`, `business`, `agribusiness`, `technology`, `science`, `sports`, `entertainment`, `brazil` |
-| `topic`     | slug       | e.g. `emmanuel-macron`, `relacoes-eua-canada`, `stf`. Discover slugs from `topics[].slug` in any response. |
+| `topic`     | slug       | e.g. `emmanuel-macron`, `relacoes-eua-canada`, `stf`. Find slugs with `/topics?search=`. A wrong slug returns 404 with `suggestions`. |
 | `date_from` | YYYY-MM-DD | Inclusive                                                                                                |
 | `date_to`   | YYYY-MM-DD | Inclusive (covers full day in UTC)                                                                       |
 | `search`    | text       | Full-text over headline/summary/body (prefix match; multi-word ANDs terms)                               |
@@ -89,6 +90,10 @@ Use detail when the user wants depth, quotes, or a full list of citations. List 
 Topic pages are curated, evergreen coverage of people, events, institutions, and ongoing stories — distinct from dated news items.
 
 ```bash
+# Find a topic by name
+curl -s 'https://dailyjournal.news/api/public/topics?search=banco%20master&limit=5' | jq '.items[] | {slug, title}'
+
+# Browse
 curl -s 'https://dailyjournal.news/api/public/topics?limit=10' | jq '.'
 ```
 
@@ -96,12 +101,13 @@ curl -s 'https://dailyjournal.news/api/public/topics?limit=10' | jq '.'
 
 | Param      | Type   | Notes                                                                            |
 | ---------- | ------ | -------------------------------------------------------------------------------- |
+| `search`   | text   | A name in any word order, accents and typos tolerated. Ranked by relevance. Not combinable with `hot` |
 | `category` | enum   | Same set as news: `world`, `politics`, `economy`, `finance`, `business`, `agribusiness`, `technology`, `science`, `sports`, `entertainment`, `brazil` |
 | `hot`      | `true` / `false` | `true` = only featured/hot topics. Omit for all topics.               |
 | `limit`    | 1–50   | Default 20                                                                       |
 | `cursor`   | opaque string | Pass `next_cursor` from previous response for pagination                         |
 
-Ordered by `last_updated_at` (most recently updated first).
+Without `search`, ordered by `last_updated_at` (most recently updated first).
 
 **Response shape:**
 
@@ -136,7 +142,7 @@ Adds to the list shape:
 - `faq` — array of `{ question, answer }` pairs, or `null` when the topic has no FAQ
 - `recent_news[]` — latest linked news, each `{ slug, url, title, description, published_at }`
 
-Use this for comprehensive context on a person, event, organization, or ongoing story. Discover slugs from `topics[].slug` in any news response or from the topics list above.
+Use this for comprehensive context on a person, event, organization, or ongoing story. Find the slug with `/topics?search=`.
 
 ### Big topics: trim before you read
 
@@ -237,10 +243,25 @@ Consistent shape across endpoints:
 }
 ```
 
-Codes: `invalid_query` (400), `invalid_slug` (400), `not_found` (404), `internal_error` (500).
+Codes: `invalid_query` (400), `invalid_slug` (400), `not_found` (404), `unknown_topic` (404), `internal_error` (500).
+
+A topic slug that doesn't exist, in `/topics/{slug}` (`not_found`) or in `topic` on `/news`
+(`unknown_topic`), names the closest topics:
+
+```json
+{
+  "error": "unknown_topic",
+  "message": "No topic found with slug \"banco-master\". Did you mean \"caso-banco-master\"?",
+  "suggestions": [{ "slug": "caso-banco-master", "title": "Caso Banco Master" }],
+  "docs": "https://dailyjournal.news/llms.txt"
+}
+```
+
+A `200` with no items means the topic exists and nothing matched the filters.
 
 ## Discovery
 
+- `https://dailyjournal.news/api/public` — every endpoint and its parameters, as JSON
 - `https://dailyjournal.news/llms.txt` — human-readable API summary
 - `https://dailyjournal.news/sitemap.xml` — full URL index
 - No auth, no keys, no rate limit currently. Be polite — cache and batch when sensible.

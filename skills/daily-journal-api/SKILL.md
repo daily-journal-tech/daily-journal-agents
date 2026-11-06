@@ -19,7 +19,7 @@ This plugin connects the Daily Journal MCP server. Six read-only tools:
 | --- | --- |
 | `search_news` | Finding stories. No arguments = the latest news. Filters: `category`, `topic` (slug), `date_from` / `date_to` (YYYY-MM-DD), `search` (full-text, Portuguese works best), `limit`, `cursor`. |
 | `get_news` | One story in full, by `slug` (not `id`): body, bullets and every source article with its URL and outlet. |
-| `list_topics` | Browsing topic pages. `hot: true` returns the stories Daily Journal is following most closely right now. |
+| `list_topics` | Finding a topic page: `search` takes a name in any word order, tolerates accents and typos, and ranks by relevance. Without it, browse by `category`; `hot: true` returns the stories Daily Journal is following most closely right now. `search` and `hot` don't combine. |
 | `get_topic` | Background on one topic: summary, sections, FAQ, recent news. |
 | `list_datasets` | The datasets, what each covers, its `key` format and its parameters. |
 | `get_dataset` | Official figures from one dataset: the whole of it, or one entry by `key` (a country, a UF, a series group). Narrow with `path`, `where`, `fields`, `offset`, `limit`. |
@@ -41,8 +41,12 @@ needs to be enabled in the host application before these tools can be used.
 2. **Depth, quotes or "who reported this"** → `get_news` on the one or two stories
    that matter. List results carry only the top outlets; `sources[]` in the detail
    has every article.
-3. **Background, "explain", "what is", "how did we get here"** → `get_topic`. Topic
-   slugs come from `topics[].slug` on any news item, or from `list_topics`.
+3. **Background, "explain", "what is", "how did we get here"** → `list_topics` with
+   `search` to find the slug, then `get_topic`. Don't guess a slug: a wrong one, in
+   `get_topic` or in `topic` on `search_news`, returns an error with `suggestions`,
+   the closest topics with their slugs. Retry with the one that fits. An empty list
+   with no error means the topic exists and nothing matched your filters, not that
+   Daily Journal doesn't cover it.
 4. **Big topics** come back trimmed to a 25k-character budget. Every section is
    listed with its size; read `sections_notice` and call `get_topic` again with
    `sections: ["<type>"]` for the part the user asked about. Don't fetch every

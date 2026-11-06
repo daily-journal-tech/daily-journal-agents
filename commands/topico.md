@@ -10,11 +10,11 @@ Subject: $ARGUMENTS
 
 1. If the subject is empty, call `list_topics` with `hot: true` and offer the list.
    Stop there.
-2. Find the slug. Call `search_news` with the subject (in Portuguese) as `search`
-   and `limit: 10`, then look at `topics[].slug` on the results. If nothing
-   matches, page through `list_topics`. Slugs look like `eleicoes-brasileiras-2026`
-   or `guerra-do-ira`. If there is no topic page, say so and answer from the news
-   items alone.
+2. Find the slug. Call `list_topics` with the subject as `search` and `limit: 5`:
+   results are ranked by relevance, in any word order, with accents and typos
+   tolerated, so read the titles and pick the one that is about the subject. Names
+   work best: `banco master`, `stf`, `guerra ira`. If none is about it, there is no
+   topic page: say so and answer from `search_news` alone.
 3. Call `get_topic` with the slug and `news_limit: 5`. Large topics come back
    trimmed: read `sections_notice` and fetch only the sections the question needs
    (`sections: ["<type>"]`), usually `situacao-atual-*`, `linha-do-tempo` or
