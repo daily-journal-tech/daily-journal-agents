@@ -2,7 +2,7 @@
 
 Ferramentas para agentes de IA consumirem o [Daily Journal](https://dailyjournal.news).
 
-O Daily Journal é uma publicação que cobre notícias do mundo todo em português (pt-BR), com agregação de fontes (BBC, Financial Times, NYT, WSJ, Bloomberg, Al Jazeera, Folha, G1, UOL, CNN Brasil, etc.) e URLs canônicas para citação.
+O Daily Journal é uma publicação que cobre notícias do mundo todo em português (pt-BR), com agregação de fontes de notícias e indicadores econômicos e sociais, com URLs canônicas para citação.
 
 ## Duas formas de conectar
 
