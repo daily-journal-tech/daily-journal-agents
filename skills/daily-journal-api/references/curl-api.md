@@ -61,14 +61,19 @@ curl -s 'https://dailyjournal.news/api/public/news?limit=20&cursor=<next_cursor-
       "outlets": [
         { "slug": "g1", "name": "G1", "logo_url": null },
         { "slug": "folha-de-spaulo", "name": "Folha de S.Paulo", "logo_url": null }
-      ]
+      ],
+      "image": {
+        "url": "https://f.i.uol.com.br/fotografia/2026/04/17/....jpg",
+        "thumbnail_url": "https://<supabase>/storage/v1/object/public/images/card-images/<key>/s.webp",
+        "credit": "Folha de S.Paulo"
+      }
     }
   ],
   "next_cursor": "<opaque cursor returned by the server>"
 }
 ```
 
-`source_count` = number of articles aggregated. `outlet_count` = distinct parent brands. `outlets[]` contains the top 5 by coverage.
+`source_count` = number of articles aggregated. `outlet_count` = distinct parent brands. `outlets[]` contains the top 5 by coverage. `image` = the photo the site's card shows, or `null`: `url` is the original file (any size), `thumbnail_url` a 240 px WebP copy that exists only while the story is on the homepage (and two days after), otherwise `null`; `credit` names the outlet or photographer.
 
 ## Get news detail
 
