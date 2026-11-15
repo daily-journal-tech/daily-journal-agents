@@ -120,6 +120,7 @@ Without `search`, ordered by `last_updated_at` (most recently updated first).
 {
   "items": [
     {
+      "id": "uuid",
       "slug": "guerra-do-ira",
       "title": "Guerra do Irã",
       "url": "https://dailyjournal.news/topics/guerra-do-ira",
