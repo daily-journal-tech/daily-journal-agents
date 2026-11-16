@@ -73,7 +73,7 @@ curl -s 'https://dailyjournal.news/api/public/news?limit=20&cursor=<next_cursor-
 }
 ```
 
-`source_count` = number of articles aggregated. `outlet_count` = distinct parent brands. `outlets[]` contains the top 5 by coverage. `image` = the photo the site's card shows, or `null`: `url` is the original file (any size), `thumbnail_url` a 240 px WebP copy that exists only while the story is on the homepage (and two days after), otherwise `null`; `credit` names the outlet or photographer.
+`source_count` = number of articles aggregated. `outlet_count` = distinct parent brands. `outlets[]` lists every one, the outlet with the most articles first. `image` = the photo the site's card shows, or `null`: `url` is the original file (any size), `thumbnail_url` a 240 px WebP copy that exists only while the story is on the homepage (and two days after), otherwise `null`; `credit` names the outlet or photographer.
 
 ## Get news detail
 

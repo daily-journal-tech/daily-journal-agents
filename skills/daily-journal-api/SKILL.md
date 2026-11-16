@@ -39,8 +39,8 @@ needs to be enabled in the host application before these tools can be used.
    already know the slug). Scan titles and descriptions. Search in Portuguese:
    `tarifas trump`, not `trump tariffs`.
 2. **Depth, quotes or "who reported this"** → `get_news` on the one or two stories
-   that matter. List results carry only the top outlets; `sources[]` in the detail
-   has every article.
+   that matter. List results name every outlet, most articles first; `sources[]` in
+   the detail has every article.
 3. **Background, "explain", "what is", "how did we get here"** → `list_topics` with
    `search` to find the slug, then `get_topic`. Don't guess a slug: a wrong one, in
    `get_topic` or in `topic` on `search_news`, returns an error with `suggestions`,
