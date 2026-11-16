@@ -28,7 +28,8 @@ Seis ferramentas: `search_news`, `get_news`, `list_topics` e `get_topic` para
 notícias e contexto, `list_datasets` e `get_dataset` para as bases de dados
 (eleições de 2026, composição da Câmara e do Senado, dívida pública, contas dos
 estados e capitais, estatais federais e estaduais, preço da eletricidade, mapa dos
-ativos do Brasil, ataques hackers de 2026). As bases voltam cortadas no mesmo orçamento, por `path`,
+ativos do Brasil, ataques hackers de 2026, licitações federais abertas, leilões da
+Receita Federal e indicadores econômicos e sociais de 157 países). As bases voltam cortadas no mesmo orçamento, por `path`,
 `where`, `fields` e páginas de linhas. As
 páginas de tópico grandes voltam cortadas num orçamento de 25 mil caracteres,
 porque `guerra-do-ira` sozinha tem ~170 mil. O índice completo das seções vem
