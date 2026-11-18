@@ -140,7 +140,7 @@ Para reportar uma vulnerabilidade, veja [SECURITY.md](SECURITY.md).
 
 ## Suporte
 
-Dúvidas, problemas ou sugestões: [oi@dailyjournal.com.br](mailto:oi@dailyjournal.com.br) ou uma [issue no repositório](https://github.com/daily-journal-tech/daily-journal-agents/issues).
+Dúvidas, problemas ou sugestões: abra um [issue no repositório](https://github.com/daily-journal-tech/daily-journal-agents/issues).
 
 ## Licença
 
