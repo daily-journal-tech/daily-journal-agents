@@ -42,8 +42,8 @@ needs to be enabled in the host application before these tools can be used.
    that matter. List results name every outlet, most articles first; `sources[]` in
    the detail has every article.
 3. **Background, "explain", "what is", "how did we get here"** → `list_topics` with
-   `search` to find the slug, then `get_topic`. Don't guess a slug: a wrong one, in
-   `get_topic` or in `topic` on `search_news`, returns an error with `suggestions`,
+   `search` to find the slug, then `get_topic`. A wrong slug, in `get_topic` or in
+   `topic` on `search_news`, returns an error with `suggestions`,
    the closest topics with their slugs. Retry with the one that fits. An empty list
    with no error means the topic exists and nothing matched your filters, not that
    Daily Journal doesn't cover it.
@@ -66,7 +66,7 @@ rather than paging through everything.
 The tools only read public news, topics and datasets. They cannot publish, edit, or retrieve
 private subscriber data. Search may return partial or loosely related matches;
 check relevance before claiming coverage. If there is no relevant evidence, say
-so rather than inventing a story or sources.
+so.
 
 ## Answering
 
